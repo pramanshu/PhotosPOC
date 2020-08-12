@@ -6,6 +6,9 @@
 //  Copyright © 2020 Pramanshu Goel. All rights reserved.
 //
 //https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=f6bb977b702cd9cf8da782c3d27637bb&text=%22river%22&format=json&nojsoncallback=1
+
+//        https://farm66.staticflickr.com/65535/50213678842_2471147c28_m.jpg
+
 import Foundation
 
 
@@ -28,7 +31,7 @@ enum NetworkError: Error {
 }
 enum Router {
     
-    case getFacts(method:String,api_key:String,text:String,format:String,nojsoncallback:String)
+    case getFlickrPhotos(method:String,api_key:String,text:String,format:String,page:String,nojsoncallback:String)
    
     
     
@@ -37,7 +40,7 @@ enum Router {
     
     var scheme: String {
         switch self {
-        case .getFacts:
+        case .getFlickrPhotos:
             return "https"
         }
     }
@@ -45,25 +48,26 @@ enum Router {
     var host: String {
         let base = "www.flickr.com"
         switch self {
-        case .getFacts:
+        case .getFlickrPhotos:
             return base
         }
     }
     
     var path: String {
         switch self {
-        case .getFacts:
+        case .getFlickrPhotos:
             return "/services/rest"
 
         }
     }
     var parameters: [URLQueryItem] {
         switch self {
-        case .getFacts(let method,let api_key, let text,let format,let nojsoncallback):
+        case .getFlickrPhotos(let method,let api_key, let text,let format,let page,let nojsoncallback):
             return [URLQueryItem(name: "method", value: method),
                     URLQueryItem(name: "api_key", value: api_key),
                 URLQueryItem(name: "text", value: text),
                 URLQueryItem(name: "format", value: format),
+                URLQueryItem(name: "page", value: page),
                 URLQueryItem(name: "nojsoncallback", value: nojsoncallback),
             ]
        
@@ -72,7 +76,7 @@ enum Router {
     
     var method: String {
         switch self {
-        case .getFacts:
+        case .getFlickrPhotos:
             return "GET"
         }
     }
@@ -83,63 +87,7 @@ enum Router {
 
 class NetworkService {
     
-    
-//    class func getData (router: Router){
-//         var components = URLComponents()
-//                    components.scheme = router.scheme
-//                    components.host = router.host
-//                    components.path = router.path
-//                   components.queryItems = router.parameters
-//
-//                    let session = URLSession(configuration: .default)
-//                    guard let url = components.url else { return }
-//                    var urlRequest = URLRequest(url: url)
-//
-//                urlRequest.httpMethod = router.method
-//
-//
-//
-//                    let dataTask = session.dataTask(with: urlRequest) { data, response, error in
-//
-//                        guard error == nil else {
-//                           // completion(.failure(.domainError))
-//                            return
-//                        }
-//                        guard response != nil else {
-//                            print("no response")
-//                            return
-//                        }
-//                        guard let data = data else {
-//                            print("no data")
-//                            return
-//                        }
-//                        do{
-//                            print(data)
-//
-//
-//
-//
-//
-//                            let dataEncode = String(data: data, encoding: .isoLatin1)?.data(using: .utf8)
-//
-//
-//                            let json =  try! JSONSerialization.jsonObject(with: data)
-//                            print(json as Any)
-////                            let responseObject = try! JSONDecoder().decode(T.self, from: dataEncode!)
-//
-//                           // completion(.success(responseObject))
-//
-//                        }
-//                        catch{
-//                          //  completion(.failure(.decodingError))
-//                        }
-//                    }
-//                    dataTask.resume()
-//                }
-    
-    
-    
-    
+
     class func request<T: Decodable>(router: Router, completion: @escaping (Result<T,NetworkError>) -> ()){
             
             var components = URLComponents()
