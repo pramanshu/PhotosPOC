@@ -15,6 +15,8 @@ class DetailImageController: UIViewController {
     var imageView = UIImageView()
     var mediumImage: UIImage?
     var photo : Photo?
+    var dataTask : URLSessionDataTask?
+    var session : URLSession?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,8 +41,40 @@ class DetailImageController: UIViewController {
                }
                let photoString = "https://farm\(farmId).staticflickr.com/\(server)/\(id)_\(secret)_b.jpg"
         print(photoString)
+        self.configure(with: photoString, session: session!)
 
     }
+    
+    
+    public func configure(with photoUrl:String,session: URLSession){
+                  
+                
+                 
+                  
+               let imgUrl = URL(string: photoUrl)
+                         if let imgUrl = imgUrl{
+                             
+                           
+                             // passed session is used for creating data task
+                             let dataTask = session.dataTask(with: imgUrl) {[weak self] (data, _, _) in
+                               
+                                
+                                let image = UIImage(data: data!)
+                                 
+                                 DispatchQueue.main.async {
+                                     if((image) != nil){
+                                      self?.imageView.image = image
+                                     }
+                                    
+                                 }
+                             }
+                             self.dataTask = dataTask
+                             dataTask.resume()
+                         }
+                         
+                         
+
+                     }
     
 
     /*

@@ -219,6 +219,7 @@ extension ViewController: UICollectionViewDelegate {
         
         cell.configure(with: photoString, session: session)
         detail.photo = photoArray![indexPath.row]
+        detail.session = session
 
         self.navigationController?.pushViewController(detail, animated: true)
     }
